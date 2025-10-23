@@ -1,0 +1,8 @@
+dependencies {
+    // JSON 처리 (프레임워크 독립적)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // 유틸리티
+    implementation 'org.apache.commons:commons-lang3'
+}
