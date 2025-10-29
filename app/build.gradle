@@ -6,7 +6,9 @@ dependencies {
     implementation project(':domain')
     implementation project(':infrastructure')
 
+
     runtimeOnly 'com.mysql:mysql-connector-j'
+    testRuntimeOnly 'com.h2database:h2'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
