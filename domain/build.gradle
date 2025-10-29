@@ -1,4 +1,8 @@
+plugins {
+    id 'bloomtoget.spring-conventions'  // Spring 설정 (BOM 포함)
+}
+
 dependencies {
-    // common 모듈
-    implementation project(':common')
+    // Validation (입력 검증은 application 책임)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
