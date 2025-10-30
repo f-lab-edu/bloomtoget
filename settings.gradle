@@ -1,6 +1,4 @@
 rootProject.name = 'bloomtoget'
-include 'common'
 include 'domain'
-include 'application'
-include 'adapter'
+include 'infrastructure'
 include 'app'

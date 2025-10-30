@@ -1,52 +1,22 @@
+/**
+ * Bloomtoget Multi-module Project
+ *
+ * 3모듈 헥사고날 아키텍처:
+ * - domain: 비즈니스 로직 + Use Case
+ * - infrastructure: 어댑터 (Web, Persistence, Security)
+ * - app: 실행 및 설정
+ *
+ * Convention Plugins:
+ * - bloomtoget.java-conventions: 모든 Java 모듈 공통 설정
+ * - bloomtoget.spring-conventions: Spring 사용 모듈 설정
+ * - bloomtoget.spring-boot-application: Spring Boot 실행 가능 앱 설정
+ */
+
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.6' apply false
-    id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
 allprojects {
     group = 'com.btg'
     version = '0.0.1-SNAPSHOT'
-    description = 'Demo project'
-}
-
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'io.spring.dependency-management'
-
-    java {
-        sourceCompatibility = '17'
-    }
-
-    configurations {
-        compileOnly {
-            extendsFrom annotationProcessor
-        }
-    }
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom 'org.springframework.boot:spring-boot-dependencies:3.5.6'
-        }
-    }
-
-    dependencies {
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    }
-
-    test {
-        useJUnitPlatform()
-    }
-}
-
-// app 모듈만 Spring Boot 애플리케이션으로 설정
-project(':app') {
-    apply plugin: 'org.springframework.boot'
 }

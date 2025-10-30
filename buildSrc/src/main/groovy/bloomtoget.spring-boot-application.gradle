@@ -1,0 +1,13 @@
+plugins {
+    id 'bloomtoget.spring-conventions'  // Spring 설정 상속
+    id 'org.springframework.boot'
+}
+
+// Spring Boot 애플리케이션 설정
+tasks.named('bootJar') {
+    archiveClassifier = ''
+}
+
+tasks.named('jar') {
+    enabled = false
+}
