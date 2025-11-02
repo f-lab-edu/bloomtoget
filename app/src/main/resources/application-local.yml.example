@@ -1,0 +1,42 @@
+# ===================================================================
+# Local 개발 환경 설정 템플릿
+# ===================================================================
+
+spring:
+  # ===================================================================
+  # Database Configuration (로컬 개발 환경)
+  # ===================================================================
+  datasource:
+    url: jdbc:mysql://localhost:3306/bloomtoget?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: your_db_username
+    password: your_db_password
+
+  # ===================================================================
+  # JPA Configuration
+  # ===================================================================
+  jpa:
+    hibernate:
+      ddl-auto: update  # 로컬에서는 스키마 자동 생성/수정
+    show-sql: true      # SQL 콘솔 출력
+
+  # ===================================================================
+  # Spring Security Configuration (로컬 개발용)
+  # ===================================================================
+  security:
+    user:
+      name: your_admin_username
+      password: your_admin_password
+
+logging:
+  level:
+    root: INFO
+    com.btg: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+
+# 개발 편의성
+spring.devtools:
+  restart:
+    enabled: true
+  livereload:
+    enabled: true

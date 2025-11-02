@@ -1,26 +1,16 @@
-// Log4j2 사용을 위해 기본 Logback 제외
-configurations {
-    all {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    }
+plugins {
+    id 'bloomtoget.spring-boot-application'  // Spring Boot 실행 가능 애플리케이션
 }
 
 dependencies {
-    // 모든 모듈
-    implementation project(':common')
     implementation project(':domain')
-    implementation project(':application')
-    implementation project(':adapter')
+    implementation project(':infrastructure')
 
-    // Database
+
     runtimeOnly 'com.mysql:mysql-connector-j'
+    testRuntimeOnly 'com.h2database:h2'
 
-    // Logging
-    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-
-    // DevTools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-    // API Docs
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 }
