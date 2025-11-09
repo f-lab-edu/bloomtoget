@@ -3,6 +3,9 @@ plugins {
 }
 
 dependencies {
-    // Validation (입력 검증은 application 책임)
+    // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Transaction
+    implementation 'org.springframework:spring-tx'
 }
