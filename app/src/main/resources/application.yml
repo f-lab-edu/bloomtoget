@@ -13,7 +13,7 @@ spring:
   # Database Configuration (MySQL)
   # ===================================================================
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
 
     hikari:
       maximum-pool-size: 10
@@ -40,7 +40,7 @@ spring:
       hibernate:
         format_sql: true
         highlight_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
         jdbc:
           batch_size: 20
@@ -72,9 +72,15 @@ server:
 # ===================================================================
 springdoc:
   api-docs:
-    path: /api-docs
+    path: docs/openapi/api-spec.yaml
   swagger-ui:
     path: /swagger-ui.html
     display-request-duration: true
     groups-order: asc
   show-actuator: false
+
+
+jwt:
+  secret: dev-secret-key-for-jwt-token-generation-minimum-256-bits-required-for-hs256-algorithm-do-not-use-in-production
+  access-token-validity-in-seconds: 3600      # 1 hour
+  refresh-token-validity-in-seconds: 604800   # 7 days
