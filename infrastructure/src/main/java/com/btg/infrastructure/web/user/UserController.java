@@ -19,7 +19,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getMyProfile() {
-        // TODO: Get userId from security context (currently hardcoded for testing)
+        // TODO: userId 받아오기
         Long userId = 1L;
 
         GetUserProfileUseCase.UserProfileResult result = getUserProfileUseCase.getUserProfile(userId);
@@ -36,7 +36,7 @@ public class UserController {
 
     @PutMapping("/me")
     public ResponseEntity<UserResponse> updateMyProfile(@Valid @RequestBody UpdateUserRequest request) {
-        // TODO: Get userId from security context (currently hardcoded for testing)
+        // TODO: userId 받아오기
         Long userId = 1L;
 
         UpdateUserProfileUseCase.UpdateUserProfileCommand command = new UpdateUserProfileUseCase.UpdateUserProfileCommand(
