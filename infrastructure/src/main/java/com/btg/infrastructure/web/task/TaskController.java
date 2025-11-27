@@ -1,6 +1,7 @@
 package com.btg.infrastructure.web.task;
 
 import com.btg.core.application.port.in.task.*;
+import com.btg.infrastructure.web.mapper.TaskResponseMapper;
 import com.btg.infrastructure.web.task.dto.request.CreateTaskRequest;
 import com.btg.infrastructure.web.task.dto.request.UpdateTaskRequest;
 import com.btg.infrastructure.web.task.dto.response.*;
@@ -9,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -22,6 +21,7 @@ public class TaskController {
     private final UpdateTaskUseCase updateTaskUseCase;
     private final DeleteTaskUseCase deleteTaskUseCase;
     private final ListTasksUseCase listTasksUseCase;
+    private final TaskResponseMapper taskResponseMapper;
 
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskRequest request) {
@@ -40,28 +40,8 @@ public class TaskController {
 
         CreateTaskUseCase.TaskResult result = createTaskUseCase.createTask(command);
 
-        TaskResponse response = new TaskResponse(
-            result.id(),
-            result.groupId(),
-            result.title(),
-            result.description(),
-            result.status(),
-            result.startDate(),
-            result.endDate(),
-            result.totalDays(),
-            result.participantCount(),
-            result.maxParticipants(),
-            result.overallCompletionRate(),
-            new UserResponse(
-                result.createdBy().id(),
-                result.createdBy().email(),
-                result.createdBy().name()
-            ),
-            result.createdAt(),
-            result.updatedAt()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(taskResponseMapper.toResponse(result));
     }
 
     @GetMapping
@@ -84,36 +64,7 @@ public class TaskController {
 
         ListTasksUseCase.PagedTaskResult result = listTasksUseCase.listTasks(query);
 
-        PagedTaskResponse response = new PagedTaskResponse(
-            result.content().stream()
-                .map(task -> new TaskResponse(
-                    task.id(),
-                    task.groupId(),
-                    task.title(),
-                    task.description(),
-                    task.status(),
-                    task.startDate(),
-                    task.endDate(),
-                    task.totalDays(),
-                    task.participantCount(),
-                    task.maxParticipants(),
-                    task.overallCompletionRate(),
-                    new UserResponse(
-                        task.createdBy().id(),
-                        task.createdBy().email(),
-                        task.createdBy().name()
-                    ),
-                    task.createdAt(),
-                    task.updatedAt()
-                ))
-                .collect(Collectors.toList()),
-            result.totalElements(),
-            result.totalPages(),
-            result.page(),
-            result.size()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(taskResponseMapper.toPagedResponse(result));
     }
 
     @GetMapping("/{taskId}")
@@ -123,30 +74,7 @@ public class TaskController {
 
         GetTaskUseCase.TaskDetailResult result = getTaskUseCase.getTask(taskId, userId);
 
-        TaskDetailResponse response = new TaskDetailResponse(
-            result.id(),
-            result.groupId(),
-            result.title(),
-            result.description(),
-            result.status(),
-            result.startDate(),
-            result.endDate(),
-            result.totalDays(),
-            result.participantCount(),
-            result.maxParticipants(),
-            result.overallCompletionRate(),
-            new UserResponse(
-                result.createdBy().id(),
-                result.createdBy().email(),
-                result.createdBy().name()
-            ),
-            result.createdAt(),
-            result.updatedAt(),
-            result.isParticipating(),
-            result.myCompletionRate()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(taskResponseMapper.toDetailResponse(result));
     }
 
     // TODO: PATCH /tasks/{taskId}/status - Task 상태 변경
@@ -169,28 +97,7 @@ public class TaskController {
 
         UpdateTaskUseCase.TaskResult result = updateTaskUseCase.updateTask(command);
 
-        TaskResponse response = new TaskResponse(
-            result.id(),
-            result.groupId(),
-            result.title(),
-            result.description(),
-            result.status(),
-            result.startDate(),
-            result.endDate(),
-            result.totalDays(),
-            result.participantCount(),
-            result.maxParticipants(),
-            result.overallCompletionRate(),
-            new UserResponse(
-                result.createdBy().id(),
-                result.createdBy().email(),
-                result.createdBy().name()
-            ),
-            result.createdAt(),
-            result.updatedAt()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(taskResponseMapper.toResponse(result));
     }
 
     @DeleteMapping("/{taskId}")
