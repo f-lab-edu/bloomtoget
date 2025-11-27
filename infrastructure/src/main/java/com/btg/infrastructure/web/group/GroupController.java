@@ -4,13 +4,12 @@ import com.btg.core.application.port.in.group.*;
 import com.btg.infrastructure.web.group.dto.request.CreateGroupRequest;
 import com.btg.infrastructure.web.group.dto.request.UpdateGroupRequest;
 import com.btg.infrastructure.web.group.dto.response.*;
+import com.btg.infrastructure.web.mapper.GroupResponseMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/groups")
@@ -22,6 +21,8 @@ public class GroupController {
     private final UpdateGroupUseCase updateGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
     private final ListGroupsUseCase listGroupsUseCase;
+
+    private final GroupResponseMapper groupResponseMapper;
 
     @PostMapping
     public ResponseEntity<GroupResponse> createGroup(@Valid @RequestBody CreateGroupRequest request) {
@@ -37,21 +38,8 @@ public class GroupController {
 
         CreateGroupUseCase.GroupResult result = createGroupUseCase.createGroup(command);
 
-        GroupResponse response = new GroupResponse(
-            result.id(),
-            result.name(),
-            result.description(),
-            result.memberCount(),
-            result.maxMembers(),
-            new UserResponse(
-                result.createdBy().id(),
-                result.createdBy().email(),
-                result.createdBy().name()
-            ),
-            result.createdAt()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(groupResponseMapper.toResponse(result));
     }
 
     // TODO: GET /groups/search - 그룹 검색
@@ -74,52 +62,14 @@ public class GroupController {
 
         ListGroupsUseCase.PagedGroupResult result = listGroupsUseCase.listGroups(query);
 
-        PagedGroupResponse response = new PagedGroupResponse(
-            result.content().stream()
-                .map(group -> new GroupResponse(
-                    group.id(),
-                    group.name(),
-                    group.description(),
-                    group.memberCount(),
-                    group.maxMembers(),
-                    new UserResponse(
-                        group.createdBy().id(),
-                        group.createdBy().email(),
-                        group.createdBy().name()
-                    ),
-                    group.createdAt()
-                ))
-                .collect(Collectors.toList()),
-            result.totalElements(),
-            result.totalPages(),
-            result.page(),
-            result.size()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(groupResponseMapper.toPagedResponse(result));
     }
 
     @GetMapping("/{groupId}")
     public ResponseEntity<GroupDetailResponse> getGroup(@PathVariable Long groupId) {
         GetGroupUseCase.GroupDetailResult result = getGroupUseCase.getGroup(groupId);
 
-        GroupDetailResponse response = new GroupDetailResponse(
-            result.id(),
-            result.name(),
-            result.description(),
-            result.memberCount(),
-            result.maxMembers(),
-            new UserResponse(
-                result.createdBy().id(),
-                result.createdBy().email(),
-                result.createdBy().name()
-            ),
-            result.createdAt(),
-            result.myRole(),
-            result.taskCount()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(groupResponseMapper.toDetailResponse(result));
     }
 
     @PutMapping("/{groupId}")
@@ -140,21 +90,7 @@ public class GroupController {
 
         UpdateGroupUseCase.GroupResult result = updateGroupUseCase.updateGroup(command);
 
-        GroupResponse response = new GroupResponse(
-            result.id(),
-            result.name(),
-            result.description(),
-            result.memberCount(),
-            result.maxMembers(),
-            new UserResponse(
-                result.createdBy().id(),
-                result.createdBy().email(),
-                result.createdBy().name()
-            ),
-            result.createdAt()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(groupResponseMapper.toResponse(result));
     }
 
     @DeleteMapping("/{groupId}")

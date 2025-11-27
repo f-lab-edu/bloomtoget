@@ -2,6 +2,7 @@ package com.btg.infrastructure.web.user;
 
 import com.btg.core.application.port.in.user.GetUserProfileUseCase;
 import com.btg.core.application.port.in.user.UpdateUserProfileUseCase;
+import com.btg.infrastructure.web.mapper.UserResponseMapper;
 import com.btg.infrastructure.web.user.dto.request.UpdateUserRequest;
 import com.btg.infrastructure.web.user.dto.response.UserResponse;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ public class UserController {
 
     private final GetUserProfileUseCase getUserProfileUseCase;
     private final UpdateUserProfileUseCase updateUserProfileUseCase;
+    private final UserResponseMapper userResponseMapper;
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getMyProfile() {
@@ -24,14 +26,7 @@ public class UserController {
 
         GetUserProfileUseCase.UserProfileResult result = getUserProfileUseCase.getUserProfile(userId);
 
-        UserResponse response = new UserResponse(
-            result.id(),
-            result.email(),
-            result.name(),
-            result.createdAt()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userResponseMapper.toResponse(result));
     }
 
     @PutMapping("/me")
@@ -47,13 +42,6 @@ public class UserController {
 
         UpdateUserProfileUseCase.UserProfileResult result = updateUserProfileUseCase.updateUserProfile(command);
 
-        UserResponse response = new UserResponse(
-            result.id(),
-            result.email(),
-            result.name(),
-            result.createdAt()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userResponseMapper.toResponse(result));
     }
 }
