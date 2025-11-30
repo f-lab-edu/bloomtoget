@@ -6,6 +6,7 @@ import com.btg.infrastructure.web.auth.dto.request.RefreshTokenRequest;
 import com.btg.infrastructure.web.auth.dto.request.SignupRequest;
 import com.btg.infrastructure.web.auth.dto.response.LoginResponse;
 import com.btg.infrastructure.web.auth.dto.response.TokenResponse;
+import com.btg.infrastructure.web.mapper.AuthResponseMapper;
 import com.btg.infrastructure.web.user.dto.response.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class AuthController {
     private final LoginUseCase loginUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final LogoutUseCase logoutUseCase;
+    private final AuthResponseMapper authResponseMapper;
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponse> signup(@Valid @RequestBody SignupRequest request) {
@@ -33,14 +35,8 @@ public class AuthController {
 
         SignupUseCase.UserResult result = signupUseCase.signup(command);
 
-        UserResponse response = new UserResponse(
-            result.id(),
-            result.email(),
-            result.name(),
-            result.createdAt()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(authResponseMapper.toUserResponse(result));
     }
 
     @PostMapping("/login")
@@ -52,20 +48,7 @@ public class AuthController {
 
         LoginUseCase.LoginResult result = loginUseCase.login(command);
 
-        UserResponse userResponse = new UserResponse(
-            result.user().id(),
-            result.user().email(),
-            result.user().name(),
-            result.user().createdAt()
-        );
-
-        LoginResponse response = new LoginResponse(
-            result.accessToken(),
-            result.refreshToken(),
-            userResponse
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authResponseMapper.toLoginResponse(result));
     }
 
     @PostMapping("/refresh")
@@ -73,9 +56,7 @@ public class AuthController {
         RefreshTokenUseCase.RefreshTokenCommand command = new RefreshTokenUseCase.RefreshTokenCommand(request.refreshToken());
         RefreshTokenUseCase.TokenResult result = refreshTokenUseCase.refreshToken(command);
 
-        TokenResponse response = new TokenResponse(result.accessToken());
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authResponseMapper.toTokenResponse(result));
     }
 
     @PostMapping("/logout")
