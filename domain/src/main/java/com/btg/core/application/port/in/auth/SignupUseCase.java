@@ -35,6 +35,6 @@ public interface SignupUseCase {
         Long id,
         String email,
         String name,
-        String createdAt
+        Long createdAt
     ) {}
 }

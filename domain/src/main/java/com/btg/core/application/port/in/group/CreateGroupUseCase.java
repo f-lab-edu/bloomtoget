@@ -42,7 +42,7 @@ public interface CreateGroupUseCase {
         Integer memberCount,
         Integer maxMembers,
         UserInfo createdBy,
-        String createdAt
+        Long createdAt
     ) {}
 
     record UserInfo(

@@ -4,5 +4,5 @@ public record GroupMemberResponse(
     Long id,
     UserResponse user,
     String role,  // "ADMIN" or "MEMBER"
-    String joinedAt
+    Long joinedAt
 ) {}

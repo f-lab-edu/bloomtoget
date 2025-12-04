@@ -47,7 +47,7 @@ public interface ListGroupsUseCase {
         Integer memberCount,
         Integer maxMembers,
         UserInfo createdBy,
-        String createdAt
+        Long createdAt
     ) {}
 
     record UserInfo(

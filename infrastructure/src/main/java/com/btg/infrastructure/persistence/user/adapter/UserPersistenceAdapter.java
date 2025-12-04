@@ -8,7 +8,7 @@ import com.btg.infrastructure.persistence.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 @Component
@@ -16,7 +16,6 @@ import java.util.Optional;
 public class UserPersistenceAdapter implements LoadUserPort, SaveUserPort, UpdateUserPort {
 
     private final UserJpaRepository userJpaRepository;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @Override
     public Optional<LoadUserPort.User> loadByEmail(String email) {
@@ -43,7 +42,7 @@ public class UserPersistenceAdapter implements LoadUserPort, SaveUserPort, Updat
                 saved.getId(),
                 saved.getEmail(),
                 saved.getName(),
-                saved.getCreatedAt().format(FORMATTER)
+                saved.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli()
         );
     }
 
@@ -64,7 +63,7 @@ public class UserPersistenceAdapter implements LoadUserPort, SaveUserPort, Updat
                 updated.getId(),
                 updated.getEmail(),
                 updated.getName(),
-                updated.getCreatedAt().format(FORMATTER)
+                updated.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli()
         );
     }
 
@@ -74,7 +73,7 @@ public class UserPersistenceAdapter implements LoadUserPort, SaveUserPort, Updat
                 entity.getEmail(),
                 entity.getPassword(),
                 entity.getName(),
-                entity.getCreatedAt().format(FORMATTER)
+                entity.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli()
         );
     }
 }

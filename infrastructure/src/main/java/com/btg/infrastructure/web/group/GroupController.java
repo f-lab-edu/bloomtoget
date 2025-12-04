@@ -21,6 +21,7 @@ public class GroupController {
     private final UpdateGroupUseCase updateGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
     private final ListGroupsUseCase listGroupsUseCase;
+    private final SearchGroupsUseCase searchGroupsUseCase;
 
     private final GroupResponseMapper groupResponseMapper;
 
@@ -42,7 +43,22 @@ public class GroupController {
             .body(groupResponseMapper.toResponse(result));
     }
 
-    // TODO: GET /groups/search - 그룹 검색
+    @GetMapping("/search")
+    public ResponseEntity<PagedGroupResponse> searchGroups(
+        @RequestParam String keyword,
+        @RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "20") Integer size
+    ) {
+        SearchGroupsUseCase.SearchGroupsQuery query = new SearchGroupsUseCase.SearchGroupsQuery(
+            keyword,
+            page,
+            size
+        );
+
+        SearchGroupsUseCase.PagedGroupResult result = searchGroupsUseCase.searchGroups(query);
+
+        return ResponseEntity.ok(groupResponseMapper.toPagedResponse(result));
+    }
 
     @GetMapping
     public ResponseEntity<PagedGroupResponse> listGroups(
