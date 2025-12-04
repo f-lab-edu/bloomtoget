@@ -30,6 +30,6 @@ public interface UpdateUserProfileUseCase {
         Long id,
         String email,
         String name,
-        String createdAt
+        Long createdAt
     ) {}
 }

@@ -10,7 +10,7 @@ public interface GetGroupUseCase {
         Integer memberCount,
         Integer maxMembers,
         UserInfo createdBy,
-        String createdAt,
+        Long createdAt,
         String myRole,  // "ADMIN", "MEMBER", "NONE"
         Integer taskCount
     ) {}

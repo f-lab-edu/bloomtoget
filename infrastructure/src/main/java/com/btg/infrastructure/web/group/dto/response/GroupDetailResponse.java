@@ -7,7 +7,7 @@ public record GroupDetailResponse(
     Integer memberCount,
     Integer maxMembers,
     UserResponse createdBy,
-    String createdAt,
+    Long createdAt,
     String myRole,  // "ADMIN", "MEMBER", "NONE"
     Integer taskCount
 ) {}

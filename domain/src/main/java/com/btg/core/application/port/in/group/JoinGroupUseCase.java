@@ -26,7 +26,7 @@ public interface JoinGroupUseCase {
         Long id,
         UserInfo user,
         String role,  // "ADMIN" or "MEMBER"
-        String joinedAt
+        Long joinedAt
     ) {}
 
     record UserInfo(
