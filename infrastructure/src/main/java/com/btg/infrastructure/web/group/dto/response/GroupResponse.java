@@ -7,5 +7,5 @@ public record GroupResponse(
     Integer memberCount,
     Integer maxMembers,
     UserResponse createdBy,
-    String createdAt
+    Long createdAt
 ) {}

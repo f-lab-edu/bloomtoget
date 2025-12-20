@@ -2,27 +2,18 @@ package com.btg.core.application.port.in.group;
 
 import java.util.List;
 
-public interface ListGroupsUseCase {
-    PagedGroupResult listGroups(ListGroupsQuery query);
+public interface SearchGroupsUseCase {
+    PagedGroupResult searchGroups(SearchGroupsQuery query);
 
-    record ListGroupsQuery(
-        Long userId,
-        String type,  // "MY" or "ALL"
+    record SearchGroupsQuery(
+        String keyword,
         Integer page,
         Integer size
     ) {
-        public ListGroupsQuery {
-            // Self-validation
-            if (userId == null || userId <= 0) {
-                throw new IllegalArgumentException("User ID is required");
+        public SearchGroupsQuery {
+            if (keyword == null || keyword.isBlank()) {
+                throw new IllegalArgumentException("Keyword is required");
             }
-            if (type == null || type.isBlank()) {
-                throw new IllegalArgumentException("Type is required");
-            }
-            if (!type.equals("MY") && !type.equals("ALL")) {
-                throw new IllegalArgumentException("Type must be either 'MY' or 'ALL'");
-            }
-            // Optional: page and size (defaults will be handled in service)
             if (page != null && page < 0) {
                 throw new IllegalArgumentException("Page must not be negative");
             }

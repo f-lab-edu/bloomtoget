@@ -8,6 +8,6 @@ public interface SaveUserPort {
             Long id,
             String email,
             String name,
-            String createdAt
+            Long createdAt
     ) {}
 }

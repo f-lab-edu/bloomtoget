@@ -15,6 +15,6 @@ public interface LoadUserPort {
             String email,
             String password,
             String name,
-            String createdAt
+            Long createdAt
     ) {}
 }

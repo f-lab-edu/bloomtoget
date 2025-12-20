@@ -7,6 +7,6 @@ public interface GetUserProfileUseCase {
         Long id,
         String email,
         String name,
-        String createdAt
+        Long createdAt
     ) {}
 }

@@ -29,7 +29,7 @@ public interface LoginUseCase {
             Long id,
             String email,
             String name,
-            String createdAt
+            Long createdAt
         ) {}
     }
 }
