@@ -2,6 +2,7 @@ package com.btg.infrastructure.web.dailyprogress;
 
 import com.btg.core.application.port.in.dailyprogress.GetDailyProgressUseCase;
 import com.btg.core.application.port.in.dailyprogress.UpdateDailyProgressUseCase;
+import com.btg.infrastructure.security.SecurityContextUtil;
 import com.btg.infrastructure.web.dailyprogress.dto.request.UpdateDailyProgressRequest;
 import com.btg.infrastructure.web.dailyprogress.dto.response.DailyProgressResponse;
 import com.btg.infrastructure.web.dailyprogress.dto.response.DailyProgressSummaryResponse;
@@ -31,8 +32,7 @@ public class DailyProgressController {
 
     @GetMapping("/me")
     public ResponseEntity<MyDailyProgressResponse> getMyDailyProgress(@PathVariable Long taskId) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         GetDailyProgressUseCase.MyDailyProgressResult result =
             getDailyProgressUseCase.getMyDailyProgress(taskId, userId);
@@ -46,8 +46,7 @@ public class DailyProgressController {
         @PathVariable String date,
         @Valid @RequestBody UpdateDailyProgressRequest request
     ) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         UpdateDailyProgressUseCase.UpdateDailyProgressCommand command =
             new UpdateDailyProgressUseCase.UpdateDailyProgressCommand(
