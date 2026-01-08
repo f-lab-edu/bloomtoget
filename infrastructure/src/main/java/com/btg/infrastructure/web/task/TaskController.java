@@ -1,9 +1,11 @@
 package com.btg.infrastructure.web.task;
 
 import com.btg.core.application.port.in.task.*;
+import com.btg.infrastructure.security.SecurityContextUtil;
 import com.btg.infrastructure.web.mapper.TaskResponseMapper;
 import com.btg.infrastructure.web.task.dto.request.CreateTaskRequest;
 import com.btg.infrastructure.web.task.dto.request.UpdateTaskRequest;
+import com.btg.infrastructure.web.task.dto.request.UpdateTaskStatusRequest;
 import com.btg.infrastructure.web.task.dto.response.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,16 @@ public class TaskController {
     private final UpdateTaskUseCase updateTaskUseCase;
     private final DeleteTaskUseCase deleteTaskUseCase;
     private final ListTasksUseCase listTasksUseCase;
+    private final UpdateTaskStatusUseCase updateTaskStatusUseCase;
+    private final JoinTaskUseCase joinTaskUseCase;
+    private final LeaveTaskUseCase leaveTaskUseCase;
+    private final ListTaskMembersUseCase listTaskMembersUseCase;
+    private final GetTaskProgressUseCase getTaskProgressUseCase;
     private final TaskResponseMapper taskResponseMapper;
 
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskRequest request) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         CreateTaskUseCase.CreateTaskCommand command = new CreateTaskUseCase.CreateTaskCommand(
             userId,
@@ -51,8 +57,7 @@ public class TaskController {
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "20") Integer size
     ) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         ListTasksUseCase.ListTasksQuery query = new ListTasksUseCase.ListTasksQuery(
             userId,
@@ -69,23 +74,37 @@ public class TaskController {
 
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskDetailResponse> getTask(@PathVariable Long taskId) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         GetTaskUseCase.TaskDetailResult result = getTaskUseCase.getTask(taskId, userId);
 
         return ResponseEntity.ok(taskResponseMapper.toDetailResponse(result));
     }
 
-    // TODO: PATCH /tasks/{taskId}/status - Task 상태 변경
+    @PatchMapping("/{taskId}/status")
+    public ResponseEntity<TaskResponse> updateTaskStatus(
+        @PathVariable Long taskId,
+        @Valid @RequestBody UpdateTaskStatusRequest request
+    ) {
+        Long userId = SecurityContextUtil.getCurrentUserId();
+
+        UpdateTaskStatusUseCase.UpdateStatusCommand command = new UpdateTaskStatusUseCase.UpdateStatusCommand(
+            taskId,
+            userId,
+            request.status()
+        );
+
+        UpdateTaskStatusUseCase.TaskResult result = updateTaskStatusUseCase.updateStatus(command);
+
+        return ResponseEntity.ok(taskResponseMapper.toResponse(result));
+    }
 
     @PutMapping("/{taskId}")
     public ResponseEntity<TaskResponse> updateTask(
         @PathVariable Long taskId,
         @Valid @RequestBody UpdateTaskRequest request
     ) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         UpdateTaskUseCase.UpdateTaskCommand command = new UpdateTaskUseCase.UpdateTaskCommand(
             taskId,
@@ -102,8 +121,7 @@ public class TaskController {
 
     @DeleteMapping("/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         DeleteTaskUseCase.DeleteTaskCommand command = new DeleteTaskUseCase.DeleteTaskCommand(
             taskId,
@@ -115,8 +133,49 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: GET /tasks/{taskId}/members - Task 참가자 목록
-    // TODO: POST /tasks/{taskId}/members - Task 참가
-    // TODO: DELETE /tasks/{taskId}/members/me - Task 참가 취소
-    // TODO: GET /tasks/{taskId}/progress - Task 전체 진행률
+    @GetMapping("/{taskId}/members")
+    public ResponseEntity<TaskMemberListResponse> listTaskMembers(@PathVariable Long taskId) {
+        ListTaskMembersUseCase.ListTaskMembersQuery query =
+            new ListTaskMembersUseCase.ListTaskMembersQuery(taskId);
+
+        ListTaskMembersUseCase.TaskMemberListResult result = listTaskMembersUseCase.listTaskMembers(query);
+
+        return ResponseEntity.ok(taskResponseMapper.toMemberListResponse(result));
+    }
+
+    @PostMapping("/{taskId}/members")
+    public ResponseEntity<TaskMemberResponse> joinTask(@PathVariable Long taskId) {
+        Long userId = SecurityContextUtil.getCurrentUserId();
+
+        JoinTaskUseCase.JoinTaskCommand command = new JoinTaskUseCase.JoinTaskCommand(
+            taskId,
+            userId
+        );
+
+        JoinTaskUseCase.TaskMemberResult result = joinTaskUseCase.joinTask(command);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(taskResponseMapper.toMemberResponse(result));
+    }
+
+    @DeleteMapping("/{taskId}/members/me")
+    public ResponseEntity<Void> leaveTask(@PathVariable Long taskId) {
+        Long userId = SecurityContextUtil.getCurrentUserId();
+
+        LeaveTaskUseCase.LeaveTaskCommand command = new LeaveTaskUseCase.LeaveTaskCommand(
+            taskId,
+            userId
+        );
+
+        leaveTaskUseCase.leaveTask(command);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{taskId}/progress")
+    public ResponseEntity<TaskProgressResponse> getTaskProgress(@PathVariable Long taskId) {
+        GetTaskProgressUseCase.TaskProgressResult result = getTaskProgressUseCase.getTaskProgress(taskId);
+
+        return ResponseEntity.ok(taskResponseMapper.toProgressResponse(result));
+    }
 }
