@@ -1,6 +1,7 @@
 package com.btg.infrastructure.web.group;
 
 import com.btg.core.application.port.in.group.*;
+import com.btg.infrastructure.security.SecurityContextUtil;
 import com.btg.infrastructure.web.group.dto.request.CreateGroupRequest;
 import com.btg.infrastructure.web.group.dto.request.UpdateGroupRequest;
 import com.btg.infrastructure.web.group.dto.response.*;
@@ -27,8 +28,7 @@ public class GroupController {
 
     @PostMapping
     public ResponseEntity<GroupResponse> createGroup(@Valid @RequestBody CreateGroupRequest request) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         CreateGroupUseCase.CreateGroupCommand command = new CreateGroupUseCase.CreateGroupCommand(
             userId,
@@ -66,8 +66,7 @@ public class GroupController {
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "20") Integer size
     ) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         ListGroupsUseCase.ListGroupsQuery query = new ListGroupsUseCase.ListGroupsQuery(
             userId,
@@ -93,8 +92,7 @@ public class GroupController {
         @PathVariable Long groupId,
         @Valid @RequestBody UpdateGroupRequest request
     ) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         UpdateGroupUseCase.UpdateGroupCommand command = new UpdateGroupUseCase.UpdateGroupCommand(
             groupId,
@@ -111,8 +109,7 @@ public class GroupController {
 
     @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> deleteGroup(@PathVariable Long groupId) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         DeleteGroupUseCase.DeleteGroupCommand command = new DeleteGroupUseCase.DeleteGroupCommand(
             groupId,

@@ -3,6 +3,7 @@ package com.btg.infrastructure.web.group;
 import com.btg.core.application.port.in.group.JoinGroupUseCase;
 import com.btg.core.application.port.in.group.LeaveGroupUseCase;
 import com.btg.core.application.port.in.group.ListGroupMembersUseCase;
+import com.btg.infrastructure.security.SecurityContextUtil;
 import com.btg.infrastructure.web.group.dto.response.GroupMemberListResponse;
 import com.btg.infrastructure.web.group.dto.response.GroupMemberResponse;
 import com.btg.infrastructure.web.group.dto.response.UserResponse;
@@ -35,8 +36,7 @@ public class GroupMemberController {
 
     @PostMapping
     public ResponseEntity<GroupMemberResponse> joinGroup(@PathVariable Long groupId) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         JoinGroupUseCase.JoinGroupCommand command = new JoinGroupUseCase.JoinGroupCommand(
             groupId,
@@ -61,8 +61,7 @@ public class GroupMemberController {
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> leaveGroup(@PathVariable Long groupId) {
-        // TODO: Get authenticated user ID from SecurityContext
-        Long userId = 1L;
+        Long userId = SecurityContextUtil.getCurrentUserId();
 
         LeaveGroupUseCase.LeaveGroupCommand command =
             new LeaveGroupUseCase.LeaveGroupCommand(groupId, userId);

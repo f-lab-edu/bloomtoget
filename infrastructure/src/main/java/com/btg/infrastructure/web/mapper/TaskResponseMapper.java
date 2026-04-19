@@ -1,13 +1,7 @@
 package com.btg.infrastructure.web.mapper;
 
-import com.btg.core.application.port.in.task.CreateTaskUseCase;
-import com.btg.core.application.port.in.task.GetTaskUseCase;
-import com.btg.core.application.port.in.task.ListTasksUseCase;
-import com.btg.core.application.port.in.task.UpdateTaskUseCase;
-import com.btg.infrastructure.web.task.dto.response.PagedTaskResponse;
-import com.btg.infrastructure.web.task.dto.response.TaskDetailResponse;
-import com.btg.infrastructure.web.task.dto.response.TaskResponse;
-import com.btg.infrastructure.web.task.dto.response.UserResponse;
+import com.btg.core.application.port.in.task.*;
+import com.btg.infrastructure.web.task.dto.response.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -27,6 +21,10 @@ public interface TaskResponseMapper {
     TaskResponse toResponse(UpdateTaskUseCase.TaskResult result);
     UserResponse toUserResponse(UpdateTaskUseCase.UserInfo userInfo);
 
+    // UpdateTaskStatusUseCase 변환
+    TaskResponse toResponse(UpdateTaskStatusUseCase.TaskResult result);
+    UserResponse toUserResponse(UpdateTaskStatusUseCase.UserInfo userInfo);
+
     // GetTaskUseCase 변환
     TaskDetailResponse toDetailResponse(GetTaskUseCase.TaskDetailResult result);
     UserResponse toUserResponse(GetTaskUseCase.UserInfo userInfo);
@@ -36,4 +34,17 @@ public interface TaskResponseMapper {
     UserResponse toUserResponse(ListTasksUseCase.UserInfo userInfo);
     List<TaskResponse> toResponseList(List<ListTasksUseCase.TaskSummary> summaries);
     PagedTaskResponse toPagedResponse(ListTasksUseCase.PagedTaskResult result);
+
+    // JoinTaskUseCase 변환
+    TaskMemberResponse toMemberResponse(JoinTaskUseCase.TaskMemberResult result);
+    UserResponse toUserResponse(JoinTaskUseCase.UserInfo userInfo);
+
+    // ListTaskMembersUseCase 변환
+    TaskMemberResponse toMemberResponse(ListTaskMembersUseCase.TaskMemberInfo memberInfo);
+    UserResponse toUserResponse(ListTaskMembersUseCase.UserInfo userInfo);
+    List<TaskMemberResponse> toMemberResponseList(List<ListTaskMembersUseCase.TaskMemberInfo> members);
+    TaskMemberListResponse toMemberListResponse(ListTaskMembersUseCase.TaskMemberListResult result);
+
+    // GetTaskProgressUseCase 변환
+    TaskProgressResponse toProgressResponse(GetTaskProgressUseCase.TaskProgressResult result);
 }
